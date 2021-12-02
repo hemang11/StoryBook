@@ -15,7 +15,7 @@ router.get('/google/callback',
     // Successful authentication, redirect home.
     res.redirect('/dashboard');
   });
-
+  
 // Logout
 router.get('/logout',(req,res)=>{
   req.logout();
