@@ -1,6 +1,7 @@
 const express  = require('express');
 const router = express.Router();
 const {ensureAuth , ensureGuest} = require('../middleware/auth');
+const moment = require('moment')
 // routes
 
 // // Get /
@@ -15,6 +16,12 @@ const {ensureAuth , ensureGuest} = require('../middleware/auth');
 
 const Story = require('../models/Story')
 
+
+// home route redirect to login
+router.get('/',(req,res)=>{
+  res.redirect('/dashboard')
+})
+
 // Login
 router.get('/login',ensureGuest,(req,res)=>{
     res.render('login',{
@@ -25,7 +32,12 @@ router.get('/login',ensureGuest,(req,res)=>{
 // Dashboard
 router.get('/dashboard',ensureAuth, async (req,res)=>{
     try {
-        const stories = await Story.find({ user: req.user.id }).lean()
+        const stories = await Story.find({ user: req.user.id }).lean();
+        console.log(stories)
+        stories.forEach(story => {
+          story.createdAt = moment(story.createdAt).format('MMMM Do YYYY, h:mm:ss a');
+        })
+        // stories.createdAt = moment(stories.createdAt).format('MMMM Do YYYY, h:mm:ss a');
         res.render('dashboard', {
           name: req.user.firstName,
           stories,

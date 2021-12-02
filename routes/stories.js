@@ -1,7 +1,7 @@
 const express  = require('express');
 const router = express.Router();
 const {ensureAuth} = require('../middleware/auth');
-
+const moment = require('moment')
 
 const Story = require('../models/Story')
 
@@ -55,6 +55,7 @@ router.get('/:id', ensureAuth, async (req, res) => {
     if (story.user._id != req.user.id && story.status == 'private') {
       res.render('error/404')
     } else {
+      story.createdAt = moment(story.createdAt).format('MMMM Do YYYY, h:mm:ss a');
       res.render('stories/show', {
         story,
       })
